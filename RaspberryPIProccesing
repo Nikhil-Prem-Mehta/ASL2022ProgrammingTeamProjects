@@ -1,0 +1,32 @@
+from cscore import CameraServer
+import cv2
+import numpy as np
+
+#4K resolution
+width = 15360
+height =  8640
+
+CameraServer.enableLogging()
+
+camera = CameraServer.startAutomaticCapture()
+camera.setResolution(width, height)
+
+sink = cs.getVideo()
+
+output = cs.putVideo("Name", width, height)
+
+while True:
+   time, input_img = cvSink.grabFrame(input_img)
+
+   if time == 0: # There is an error
+      output.notifyError(sink.getError())
+      continue
+
+   hsv_img = cv2.cvtColor(input_img, cv2.COLOR_BGR2HSV)
+
+   binary_img = cv2.inRange(hsv_img, (8, 90, 80), (25, 100, 100))
+
+   kernel = np.ones((3, 3), np.uint8)
+   binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
+
+   output.putFrame(processed_img)
